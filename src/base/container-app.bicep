@@ -1,8 +1,23 @@
 import { createResource } from '../internal/resource.bicep'
-import { Context, Tags } from '../types.bicep'
+import { Context, Options, Tags } from '../types.bicep'
 
 @export()
-func containerApp(context Context) ContainerApp => createResource('', [])
+func containerApp(context Context, options Options) ContainerApp => createResource(context, 'containerApp', options)
+
+@export()
+func containerAppEnvironment(context Context, sku Sku, options Options) ContainerApp =>
+  createResource(
+    context,
+    'containerAppEnvironment',
+    concat(
+      [
+        { sku: { name: sku } }
+      ],
+      options
+    )
+  )
+
+type Sku = 'Consumption'
 
 @export()
 type ContainerApp = {

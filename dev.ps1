@@ -1,6 +1,6 @@
 Function Build {
     Clear-Host
-    az deployment sub create --location 'west europe' --template-file '.\example\example 1\main.bicep' --what-if
+    az deployment sub create --location 'west europe' --template-file '.\example\containerApps\environment.bicep' --parameters '.\example\containerApps\params\environment.dev.bicepparam' --what-if
     Write-Host 'Done' -ForegroundColor green
 }
 
