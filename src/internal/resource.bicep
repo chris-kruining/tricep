@@ -13,7 +13,7 @@ func createResource(context Context, resourceType ResourceType, options object[]
           type: to_resource_abbreviation(resourceType)
           name: context.name
         },
-        context.template
+        context.nameConventionTemplate
       )
       location: context.location
       tags: context.tags

@@ -24,6 +24,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
 resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
   name: containerAppEnvironmentConfig.name
   location: containerAppEnvironmentConfig.location
+  tags: containerAppEnvironmentConfig.tags
   sku: containerAppEnvironmentConfig.sku
   properties: containerAppEnvironmentConfig.properties
 
@@ -95,4 +96,4 @@ resource app 'Microsoft.App/containerApps@2022-06-01-preview' = {
   // }
 }
 
-// output app resource'Microsoft.App/containerApps@2022-06-01-preview' = app
+output app resource'Microsoft.App/containerApps@2022-06-01-preview' = app

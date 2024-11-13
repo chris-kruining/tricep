@@ -1,10 +1,19 @@
 @export()
 type Context = {
   name: string
-  template: string
+  nameConventionTemplate: string
   environment: string
   location: Location
+  tenant: Tenant
   tags: Tags
+}
+
+@description('this is bicep\'s own tenant, there just isn\'t a type for it')
+@export()
+type Tenant = {
+  countryCode: string
+  displayName: string
+  tenantId: string
 }
 
 @export()
@@ -83,8 +92,15 @@ type ResourceType =
   | 'managedIdentity'
   | 'staticWebApp'
   | 'appService'
+  | 'appServicePlan'
   | 'containerRegistry'
-  | 'containerAppEnvironment'
+  | 'appConfiguration'
+  | 'serviceBus'
+  | 'serviceBusQueue'
+  | 'serviceBusTopic'
+  | 'serviceBusTopicSubscription'
+  | 'applicationInsights'
+  | 'storageAccount'
 
 @export()
 type Abbreviation =
@@ -95,10 +111,12 @@ type Abbreviation =
   | 'id'
   | 'stapp'
   | 'app'
+  | 'asp'
   | 'cr'
-  | 'cae'
-  | 'cae'
-  | 'cae'
-  | 'cae'
-  | 'cae'
-  | 'cae'
+  | 'appcs'
+  | 'sb'
+  | 'sbq'
+  | 'sbt'
+  | 'sbts'
+  | 'appi'
+  | 'st'

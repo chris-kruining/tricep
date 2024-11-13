@@ -1,4 +1,5 @@
-import { createContext } from '../../../src/context.bicep'
+import { Context } from '../../../src/types.bicep'
+import { createContext } from '../../../src/common/context.bicep'
 import { resourceGroup } from '../../../src/recommended/resource-group.bicep'
 
 targetScope = 'subscription'
@@ -6,8 +7,14 @@ targetScope = 'subscription'
 param deployedAt string
 param environment string
 
-var context = createContext('appName', '$type-$env-$loc-$name', environment, 'westeurope', {
+var context = createContext({
+  name: 'appName'
+  nameConventionTemplate: '$type-$env-$loc-$name'
+  environment: environment
+  location: 'westeurope'
   deployedAt: deployedAt
+  tenant: tenant()
+  tags: {}
 })
 
 var resourceGroupConfig = resourceGroup(context, [])
@@ -20,8 +27,8 @@ resource group 'Microsoft.Resources/resourceGroups@2024-07-01' = {
 }
 
 module containers 'containers.bicep' = {
-  scope: group
   name: 'containers'
+  scope: group
   params: {
     context: context
   }
