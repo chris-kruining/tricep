@@ -38,7 +38,7 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   // }
 }
 
-resource app 'Microsoft.App/containerApps@2022-06-01-preview' = {
+resource app 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppConfig.name
   location: containerAppConfig.location
   identity: containerAppConfig.identity
