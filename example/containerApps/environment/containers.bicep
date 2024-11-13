@@ -13,7 +13,7 @@ var containerAppConfig = containerApp(context, [
   withManagedIdentity()
 ])
 
-resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
+resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: containerRegistryConfig.name
   location: containerRegistryConfig.location
   tags: containerRegistryConfig.tags
