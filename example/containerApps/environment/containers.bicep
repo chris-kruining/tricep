@@ -13,7 +13,7 @@ var containerAppConfig = containerApp(context, [
   withManagedIdentity()
 ])
 
-resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
+resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: containerRegistryConfig.name
   location: containerRegistryConfig.location
   tags: containerRegistryConfig.tags
@@ -21,7 +21,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = 
   properties: containerRegistryConfig.properties
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
+resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: containerAppEnvironmentConfig.name
   location: containerAppEnvironmentConfig.location
   tags: containerAppEnvironmentConfig.tags
@@ -39,7 +39,7 @@ resource environment 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
   // }
 }
 
-resource app 'Microsoft.App/containerApps@2022-06-01-preview' = {
+resource app 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppConfig.name
   location: containerAppConfig.location
   identity: containerAppConfig.identity
