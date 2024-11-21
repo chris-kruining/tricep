@@ -72,7 +72,7 @@ jobs:
           subscription-id: ${{ secrets.TRICEP_SUBSCRIPTION_ID }}
 
       - name: Publish Bicep module
-        uses: azure/cli@v1
+        uses: azure/cli@v2
         with:
           inlineScript: |
             for x in ls -al src; do
