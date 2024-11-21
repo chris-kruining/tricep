@@ -1,12 +1,12 @@
 import { Context, ResourceType } from '../types.bicep'
-import { createName, to_resource_abbreviation, to_location_abbreviation } from './name.bicep'
+import { create_name, to_resource_abbreviation, to_location_abbreviation } from './name.bicep'
 
 @export()
-func createResource(context Context, resourceType ResourceType, options object[]) object =>
+func create_resource(context Context, resourceType ResourceType, options object[]) object =>
   reduce(
     options,
     {
-      name: createName(
+      name: create_name(
         {
           env: context.environment
           loc: to_location_abbreviation(context.location)

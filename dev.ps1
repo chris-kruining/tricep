@@ -48,4 +48,5 @@ Function Watch {
     }
 }
 
+Build
 Watch

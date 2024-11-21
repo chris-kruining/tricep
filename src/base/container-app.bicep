@@ -1,23 +1,26 @@
-import { createResource } from '../internal/resource.bicep'
+import { create_resource } from '../internal/resource.bicep'
 import { Context, Options, Tags } from '../types.bicep'
 
-@export()
-func containerApp(context Context, options Options) ContainerApp => createResource(context, 'containerApp', options)
+import { container_app_environment } from 'container-app/environment.bicep'
 
 @export()
-func containerAppEnvironment(context Context, sku Sku, options Options) ContainerApp =>
-  createResource(
+func container_app(context Context, containers Container[], options Options) object =>
+  create_resource(
     context,
-    'containerAppEnvironment',
-    concat(
+    'containerApp',
+    union(
       [
-        { sku: { name: sku } }
+        {
+          properties: {
+            template: {
+              containers: containers
+            }
+          }
+        }
       ],
       options
     )
   )
-
-type Sku = 'Consumption'
 
 @export()
 type ContainerApp = {
@@ -300,6 +303,7 @@ type Template = {
   volumes: Volume[]?
 }
 
+@export()
 type Container = {
   @description('Container start command arguments.')
   args: string[]?
@@ -401,7 +405,7 @@ type ContainerAppProbeTcpSocket = {
 
 type ContainerResources = {
   @description('Required CPU in cores, e.g. 0.5 To specify a decimal value, use the json() function.')
-  cpu: int?
+  cpu: string?
 
   @description('Required memory, e.g. "250Mb".')
   memory: string?

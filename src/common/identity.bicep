@@ -1,5 +1,5 @@
 @export()
-func withManagedIdentity() object => {
+func with_managed_identity() object => {
   identity: {
     type: 'SystemAssigned'
   }

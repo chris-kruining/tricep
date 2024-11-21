@@ -1,13 +1,12 @@
-﻿import { createResource } from '../internal/resource.bicep'
+﻿import { create_resource } from '../internal/resource.bicep'
 import { Context, Options } from '../types.bicep'
 
 @export()
-func appService(context Context, options Options) object => createResource(context, 'appService', options)
-
+func app_service(context Context, options Options) object => create_resource(context, 'appService', options)
 
 // Always on
 @export()
-func withAlwaysOn(alwaysOn bool) object => {
+func with_always_on(alwaysOn bool) object => {
   properties: {
     siteConfig: {
       alwaysOn: alwaysOn
@@ -17,7 +16,7 @@ func withAlwaysOn(alwaysOn bool) object => {
 
 // Site configuration
 @export()
-func withSiteConfig(
+func with_site_config(
   appServicePlan string,
   vnetName string,
   vnetRouteAllEnabled bool,
@@ -47,7 +46,7 @@ type IpSecurityRestrictionAction = 'Allow' | 'Deny'
 
 // App settings
 @export()
-func withIpRestrictions(ipRestrictions IpSecurityRestriction[]) object => {
+func with_ip_restrictions(ipRestrictions IpSecurityRestriction[]) object => {
   properties: {
     siteConfig: {
       ipSecurityRestrictions: ipRestrictions
@@ -65,7 +64,7 @@ type IpSecurityRestriction = {
 
 // App settings
 @export()
-func withAppSettings(appSettings AppSetting[]) object => {
+func with_app_settings(appSettings AppSetting[]) object => {
   properties: {
     siteConfig: {
       appSettings: appSettings
@@ -81,7 +80,7 @@ type AppSetting = {
 
 // Connections strings
 @export()
-func withConnectionStrings(connectionStrings ConnStringInfo[]) object => {
+func with_connection_strings(connectionStrings ConnStringInfo[]) object => {
   properties: {
     siteConfig: {
       connectionStrings: connectionStrings

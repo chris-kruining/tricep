@@ -1,8 +1,8 @@
 import { ResourceType, Abbreviation, Location } from '../types.bicep'
 
 @export()
-func createName(context object, template string) string =>
-  reduce(items(context), template, (t, e) => replace(string(t), '$${e.key}', e.value))
+func create_name(context object, template string) string =>
+  toLower(reduce(items(context), template, (t, e) => replace(string(t), '$${e.key}', e.value)))
 
 @export()
 func to_resource_abbreviation(resourceType ResourceType) Abbreviation =>
@@ -14,7 +14,16 @@ func to_resource_abbreviation(resourceType ResourceType) Abbreviation =>
     managedIdentity: 'id'
     staticWebApp: 'stapp'
     appService: 'app'
+    appServicePlan: 'asp'
     containerRegistry: 'cr'
+    appConfiguration: 'appcs'
+    serviceBus: 'sb'
+    serviceBusQueue: 'sbq'
+    serviceBusTopic: 'sbt'
+    serviceBusTopicSubscription: 'sbts'
+    applicationInsights: 'appi'
+    storageAccount: 'st'
+    logAnalytics: 'la'
   }[resourceType]
 
 @export()

@@ -2,8 +2,8 @@
 import { Context, Options } from '../types.bicep'
 
 @export()
-func staticWebApp(context Context, options Options) object =>
-  base.staticWebApp(
+func static_web_app(context Context, options Options) object =>
+  base.static_web_app(
     context,
     union(
       [
@@ -16,7 +16,7 @@ func staticWebApp(context Context, options Options) object =>
   )
 
 @export()
-func withManagedIdentity() object => base.withIdentity('SystemAssigned')
+func with_managed_identity() object => base.with_identity('SystemAssigned')
 
 @export()
-func withDefaultSku() object => base.withSku('Standard')
+func withDefaultSku() object => base.with_sku('Standard')

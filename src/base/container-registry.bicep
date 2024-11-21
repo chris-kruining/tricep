@@ -1,9 +1,9 @@
 import { Context, Options } from '../types.bicep'
-import { createResource } from '../internal/resource.bicep'
+import { create_resource } from '../internal/resource.bicep'
 
 @export()
-func containerRegistry(context Context, sku Sku, options Options) object =>
-  createResource(
+func container_registry(context Context, sku Sku, options Options) object =>
+  create_resource(
     context,
     'containerRegistry',
     concat(

@@ -1,6 +1,7 @@
 @export()
 type Context = {
   name: string
+  project: string
   nameConventionTemplate: string
   environment: string
   location: Location
@@ -101,6 +102,7 @@ type ResourceType =
   | 'serviceBusTopicSubscription'
   | 'applicationInsights'
   | 'storageAccount'
+  | 'logAnalytics'
 
 @export()
 type Abbreviation =
@@ -120,3 +122,4 @@ type Abbreviation =
   | 'sbts'
   | 'appi'
   | 'st'
+  | 'la'

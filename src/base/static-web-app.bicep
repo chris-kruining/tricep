@@ -1,12 +1,12 @@
-import { createResource } from '../internal/resource.bicep'
+import { create_resource } from '../internal/resource.bicep'
 import { Context, Options } from '../types.bicep'
 
 @export()
-func staticWebApp(context Context, options Options) object => createResource(context, 'staticWebApp', options)
+func static_web_app(context Context, options Options) object => create_resource(context, 'staticWebApp', options)
 
 // Identity
 @export()
-func withIdentity(identity Identity) object => {
+func with_identity(identity Identity) object => {
   identity: {
     type: identity
   }
@@ -17,7 +17,7 @@ type Identity = 'SystemAssigned' | 'Manual'
 
 // Sku
 @export()
-func withSku(sku Sku) object => {
+func with_sku(sku Sku) object => {
   sku: {
     name: sku
     tier: sku

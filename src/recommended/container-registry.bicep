@@ -1,6 +1,6 @@
 import { Context, Options } from '../types.bicep'
-import * as common from '../base/container-registry.bicep'
+import * as base from '../base/container-registry.bicep'
 
 @export()
-func containerRegistry(context Context, options Options) object =>
-  common.containerRegistry(context, 'Standard', options)
+func container_registry(context Context, options Options) object =>
+  base.container_registry(context, 'Standard', options)

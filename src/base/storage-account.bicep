@@ -1,9 +1,9 @@
-﻿import { createResource } from '../internal/resource.bicep'
+﻿import { create_resource } from '../internal/resource.bicep'
 import { Context, Options } from '../types.bicep'
 
 @export()
-func storageAccount(context Context, sku Sku, kind Kind, options Options) object =>
-  createResource(
+func storage_account(context Context, sku Sku, kind Kind, options Options) object =>
+  create_resource(
     context,
     'storageAccount',
     union(
@@ -22,7 +22,7 @@ func storageAccount(context Context, sku Sku, kind Kind, options Options) object
 
 // Sku
 @export()
-func withSku(sku Sku) object => {
+func with_sku(sku Sku) object => {
   sku: sku
 }
 
@@ -39,7 +39,7 @@ type Sku =
 
 // Kind
 @export()
-func withKind(kind Kind) object => {
+func with_kind(kind Kind) object => {
   kind: kind
 }
 
@@ -48,7 +48,7 @@ type Kind = 'BlobStorage' | 'BlockBlobStorage' | 'FileStorage' | 'Storage' | 'St
 
 // AccessTier
 @export()
-func withAccessTier(accessTier AccessTier) object => {
+func with_access_tier(accessTier AccessTier) object => {
   properties: {
     accessTier: accessTier
   }
@@ -59,7 +59,7 @@ type AccessTier = 'Cool' | 'Hot' | 'Premium'
 
 // AllowPublicAccess
 @export()
-func withAllowPublicAccess(allowPublicAccess bool) object => {
+func with_allow_public_access(allowPublicAccess bool) object => {
   properties: {
     allowPublicAccess: allowPublicAccess
   }

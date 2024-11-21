@@ -1,14 +1,15 @@
 import { Context } from '../../../src/types.bicep'
-import { createContext } from '../../../src/common/context.bicep'
-import { resourceGroup } from '../../../src/recommended/resource-group.bicep'
+import { create_context } from '../../../src/common/context.bicep'
+import { resource_group } from '../../../src/recommended/resource-group.bicep'
 
 targetScope = 'subscription'
 
 param deployedAt string
 param environment string
 
-var context = createContext({
+var context = create_context({
   name: 'appName'
+  project: 'project'
   nameConventionTemplate: '$type-$env-$loc-$name'
   environment: environment
   location: 'westeurope'
@@ -17,7 +18,7 @@ var context = createContext({
   tags: {}
 })
 
-var resourceGroupConfig = resourceGroup(context, [])
+var resourceGroupConfig = resource_group(context, [])
 
 resource group 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupConfig.name
@@ -26,10 +27,20 @@ resource group 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   properties: resourceGroupConfig.properties
 }
 
+module monitoring 'monitoring.bicep' = {
+  name: 'monitoring'
+  scope: group
+  params: {
+    context: context
+  }
+}
+
 module containers 'containers.bicep' = {
   name: 'containers'
   scope: group
   params: {
     context: context
+    customerId: 'monitoring.outputs.la_customerId'
+    sharedKey: 'monitoring.outputs.la_sharedKey'
   }
 }

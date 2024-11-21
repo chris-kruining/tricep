@@ -1,22 +1,22 @@
-﻿import * as common from '../base/storage-account.bicep'
+﻿import * as base from '../base/storage-account.bicep'
 import { Context, Options } from '../types.bicep'
 
 @export()
-func storageAccount(context Context, options Options) object =>
-  common.storageAccount(
+func storage_account(context Context, options Options) object =>
+  base.storage_account(
     context,
     'Standard_LRS',
     'StorageV2',
     union(
       [
-        withAccessTier('Hot')
+        with_access_tier('Hot')
       ],
       options
     )
   )
 
 @export()
-func withPublicAccess() object => common.withAllowPublicAccess(true)
+func withPublicAccess() object => base.with_allow_public_access(true)
 
 @export()
-func withAccessTier(accessTier common.AccessTier) object => common.withAccessTier(accessTier)
+func with_access_tier(accessTier base.AccessTier) object => base.with_access_tier(accessTier)

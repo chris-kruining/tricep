@@ -1,14 +1,14 @@
-﻿import * as common from '../base/app-service.bicep'
-import { Context } from '../types.bicep'
+﻿import * as base from '../base/app-service.bicep'
+import { Context, Options } from '../types.bicep'
 
 @export()
 func appService(context Context, appServicePlan string, vnetName string, appInsights string, options Options) object =>
-  common.appService(
+  base.appService(
     context,
     union(
       [
-        common.withSiteConfig(appServicePlan, vnetName, true, true, '1.2', 'Deny', false)
-        common.withAppSettings([
+        base.withSiteConfig(appServicePlan, vnetName, true, true, '1.2', 'Deny', false)
+        base.withAppSettings([
           {
             name: 'ASPNETCORE_ENVIRONMENT'
             value: context.environment
@@ -22,7 +22,7 @@ func appService(context Context, appServicePlan string, vnetName string, appInsi
             value: '~2'
           }
         ])
-        common.withIpRestrictions([
+        base.withIpRestrictions([
           {
             name: 'Allow backend subnet ${context.environment}'
             vnetSubnetResourceId: vnetName
@@ -36,18 +36,18 @@ func appService(context Context, appServicePlan string, vnetName string, appInsi
   )
 
 @export()
-func withAlwaysOn(alwaysOn bool) object => common.withAlwaysOn(alwaysOn)
+func withAlwaysOn(alwaysOn bool) object => base.withAlwaysOn(alwaysOn)
 
 @export()
-func withAppSettings(appSettings common.AppSetting[]) object => common.withAppSettings(appSettings)
+func withAppSettings(appSettings base.AppSetting[]) object => base.withAppSettings(appSettings)
 
 @export()
-func withConnectionStrings(connectionStrings common.ConnStringInfo[]) object =>
-  common.withConnectionStrings(connectionStrings)
+func withConnectionStrings(connectionStrings base.ConnStringInfo[]) object =>
+  base.withConnectionStrings(connectionStrings)
 
 @export()
 func withAllowManagementVm(managementSubNet string) object =>
-  common.withIpRestrictions([
+  base.withIpRestrictions([
     {
       name: 'Allow management vm'
       vnetSubnetResourceId: managementSubNet

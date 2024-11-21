@@ -1,5 +1,5 @@
 import { Context, Options } from '../types.bicep'
-import { createResource } from '../internal/resource.bicep'
+import { create_resource } from '../internal/resource.bicep'
 
 @export()
-func resourceGroup(context Context, options Options) object => createResource(context, 'resourceGroup', options)
+func resource_group(context Context, options Options) object => create_resource(context, 'resourceGroup', options)

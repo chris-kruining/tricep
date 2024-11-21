@@ -1,10 +1,10 @@
-import { createResource } from '../internal/resource.bicep'
+import { create_resource } from '../internal/resource.bicep'
 import { Context, Options } from '../types.bicep'
 
 @description('key vault')
 @export()
-func keyVault(context Context, sku Sku, options Options) object =>
-  createResource(
+func key_vault(context Context, sku Sku, options Options) object =>
+  create_resource(
     context,
     'keyVault',
     union(
@@ -31,7 +31,7 @@ type Sku = 'premium' | 'standard'
 
 // Soft delete
 @export()
-func withSoftDelete(enable bool) object => {
+func with_soft_delete(enable bool) object => {
   properties: {
     enableSoftDelete: enable
   }

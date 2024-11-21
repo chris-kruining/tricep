@@ -1,9 +1,9 @@
-import { createResource } from '../internal/resource.bicep'
+import { create_resource } from '../internal/resource.bicep'
 import { Context, Options } from '../types.bicep'
 
 @export()
-func appConfiguration(context Context, sku Sku, options Options) object =>
-  createResource(
+func app_configuration(context Context, sku Sku, options Options) object =>
+  create_resource(
     context,
     'appConfiguration',
     union(
@@ -20,7 +20,7 @@ func appConfiguration(context Context, sku Sku, options Options) object =>
 
 // Sku
 @export()
-func withSku(sku Sku) object => {
+func with_sku(sku Sku) object => {
   sku: {
     name: sku
   }
