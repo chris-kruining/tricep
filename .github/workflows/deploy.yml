@@ -84,7 +84,7 @@ jobs:
           inlineScript: |
             cd src
 
-            for x in $(find . -type d -name internal -prune -o -type f -name "*.bicep"); do
+            for x in $(find . -name internal -prune -o -type f -name "*.bicep" -print); do
               name=${x#"./"}
               name=${name%".bicep"}
               name="br:${{ secrets.ACR_LOGIN_SERVER }}/$name"
