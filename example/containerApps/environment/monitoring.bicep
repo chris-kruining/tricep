@@ -13,6 +13,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   properties: logAnalyticsConfig.properties
 }
 
-// output logAnalytics resource'Microsoft.OperationalInsights/workspaces@2021-06-01' = logAnalytics
-output la_customerId string = logAnalytics.properties.customerId
-output la_sharedKey string = logAnalytics.listKeys().primarySharedKey
+output logAnalytics resource'Microsoft.OperationalInsights/workspaces@2021-06-01' = logAnalytics
+// output la_name string = logAnalytics.name
+// output la_customerId string = logAnalytics.properties.customerId
+// output la_sharedKey string = logAnalytics.listKeys().primarySharedKey

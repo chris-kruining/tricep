@@ -10,23 +10,21 @@ import {
   with_auto_scaling
   with_environment
   with_app_logs
+  with_traffic_splitting
 } from '../../../src/recommended/app/container-app.bicep'
 
 targetScope = 'resourceGroup'
 
 param context Context
-param customerId string
-param sharedKey string
+param logAnalytics resource'Microsoft.OperationalInsights/workspaces@2023-09-01'
 
 var containerRegistryConfig = container_registry(with_name(context, context.project), [])
-var containerAppEnvironmentConfig = container_app_environment(with_name(context, context.project), [
-  with_app_logs(customerId, sharedKey)
-])
+var containerAppEnvironmentConfig = container_app_environment(with_name(context, context.project), [])
 var containerApp1Config = container_app(
   with_name(context, 'app_1'),
   [
-    container('container 1', 'some-container-image')
-    container('container 2', 'some-other-container-image')
+    container({ name: 'container 1', image: 'some-container-image' })
+    container({ name: 'container 2', image: 'some-other-container-image' })
   ],
   [
     with_managed_identity()
@@ -42,11 +40,18 @@ var containerApp1Config = container_app(
 var containerApp2Config = container_app(
   with_name(context, 'app_2'),
   [
-    container('container 1', 'some-third-container-image')
+    container({ name: 'container 1', image: 'some-third-container-image' })
   ],
   [
     with_managed_identity()
     with_environment(environment.id)
+    with_traffic_splitting({
+      by: 'name'
+      weights: {
+        rev1: 80
+        rev2: 20
+      }
+    })
     with_dapr(context, 3001)
     with_auto_scaling(1, 1, {
       ruleName: {
@@ -68,7 +73,7 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: containerAppEnvironmentConfig.name
   location: containerAppEnvironmentConfig.location
   tags: containerAppEnvironmentConfig.tags
-  properties: containerAppEnvironmentConfig.properties
+  properties: with_app_logs(logAnalytics.properties.customerId, logAnalytics.listKeys().primarySharedKey)
 }
 
 resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
@@ -78,18 +83,6 @@ resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
   properties: containerApp1Config.properties
 
   // properties: {
-  //   configuration: {
-  //     ingress: {
-  //       external: true
-  //       targetPort: 80
-  //       allowInsecure: false
-  //       traffic: [
-  //         {
-  //           latestRevision: true
-  //           weight: 100
-  //         }
-  //       ]
-  //     }
   //     registries: [
   //       {
   //         identity: uai.id

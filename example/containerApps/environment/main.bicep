@@ -8,9 +8,8 @@ param deployedAt string
 param environment string
 
 var context = create_context({
-  name: 'appName'
-  project: 'project'
-  nameConventionTemplate: '$type-$environment-$location-$name'
+  project: 'projectName'
+  nameConventionTemplate: '$type-$environment-$location-$project'
   environment: environment
   location: 'westeurope'
   deployedAt: deployedAt
@@ -40,7 +39,6 @@ module containers 'containers.bicep' = {
   scope: group
   params: {
     context: context
-    customerId: 'monitoring.outputs.la_customerId'
-    sharedKey: 'monitoring.outputs.la_sharedKey'
+    logAnalytics: monitoring.outputs.logAnalytics
   }
 }

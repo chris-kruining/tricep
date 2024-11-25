@@ -1,15 +1,14 @@
 import { Context, Location, Tags, Tenant } from '../types.bicep'
 
 @export()
-func create_context(params create_contextParams) Context => {
-  name: params.name
+func create_context(params CreateContextParams) Context => {
   project: params.project
   nameConventionTemplate: params.nameConventionTemplate
   environment: params.environment
   location: params.location
   tenant: params.tenant
   tags: {
-    application: params.name
+    project: params.project
     deployedAt: params.deployedAt
     environment: params.environment
     location: params.location
@@ -18,8 +17,7 @@ func create_context(params create_contextParams) Context => {
   }
 }
 
-type create_contextParams = {
-  name: string
+type CreateContextParams = {
   project: string
   nameConventionTemplate: string
   deployedAt: string
@@ -32,5 +30,5 @@ type create_contextParams = {
 @export()
 func with_name(context Context, name string) Context => {
   ...context
-  name: name
+  nameConventionTemplate: '${context.nameConventionTemplate}-${name}'
 }

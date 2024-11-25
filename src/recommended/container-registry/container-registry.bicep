@@ -6,6 +6,7 @@ func container_registry(context Context, options Options) object =>
   base.container_registry(context, 'Standard', options)
 
 @export()
+@description('DEPRECATED, either remove this function call to use standard, or change "basic" to "classic" or "premium"')
 func with_basic_sky() object => base.with_sku('Basic')
 
 @export()
