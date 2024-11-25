@@ -10,7 +10,7 @@ param environment string
 var context = create_context({
   name: 'appName'
   project: 'project'
-  nameConventionTemplate: '$type-$env-$loc-$name'
+  nameConventionTemplate: '$type-$environment-$location-$name'
   environment: environment
   location: 'westeurope'
   deployedAt: deployedAt

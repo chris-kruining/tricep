@@ -8,9 +8,10 @@ func create_resource(context Context, resourceType ResourceType, options object[
     {
       name: create_name(
         {
-          env: context.environment
-          loc: to_location_abbreviation(context.location)
+          environment: context.environment
+          location: to_location_abbreviation(context.location)
           type: to_resource_abbreviation(resourceType)
+          project: context.project
           name: context.name
         },
         context.nameConventionTemplate

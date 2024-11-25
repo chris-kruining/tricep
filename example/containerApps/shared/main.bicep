@@ -8,7 +8,7 @@ param deployedAt string
 var context = create_context({
   name: 'appName'
   project: 'project'
-  nameConventionTemplate: '$type-$env-$loc-$name'
+  nameConventionTemplate: '$type-$environment-$location-$name'
   environment: 'shared'
   location: 'westeurope'
   deployedAt: deployedAt
