@@ -7,7 +7,7 @@ param context Context
 
 var logAnalyticsConfig = log_analytics(context, [])
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: logAnalyticsConfig.name
   location: logAnalyticsConfig.location
   properties: logAnalyticsConfig.properties
