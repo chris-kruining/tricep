@@ -19,4 +19,11 @@ func container_registry(context Context, sku Sku, options Options) object =>
   )
 
 @export()
+func with_sku(sku Sku) object => {
+  sku: {
+    name: sku
+  }
+}
+
+@export()
 type Sku = 'Basic' | 'Classic' | 'Premium' | 'Standard'
