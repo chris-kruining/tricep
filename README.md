@@ -1,2 +1,2 @@
-# bicep-templates
+# tricep
 common templates for bicep

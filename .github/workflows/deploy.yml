@@ -54,12 +54,11 @@ jobs:
       - name: Deploy bicep
         uses: Azure/cli@v2
         with:
-          azcliversion: 2.66.0
           inlineScript: |
             az deployment sub create \
               --location westeurope \
               --template-file infrastructure/main.bicep \
-              --parameters infrastructure/params/main.prd.bicepparam \
+              --parameters infrastructure/params/main.prd.bicepparam
 
   publish:
     name: Publish
