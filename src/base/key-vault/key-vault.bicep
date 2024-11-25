@@ -1,5 +1,5 @@
-import { create_resource } from '../internal/resource.bicep'
-import { Context, Options } from '../types.bicep'
+import { create_resource } from '../../internal/resource.bicep'
+import { Context, Options } from '../../types.bicep'
 
 @description('key vault')
 @export()

@@ -1,10 +1,10 @@
-import { create_resource } from '../internal/resource.bicep'
-import { Context, Options, Tags } from '../types.bicep'
+import { create_resource } from '../../internal/resource.bicep'
+import { Context, Options, Tags } from '../../types.bicep'
 
 import { container_app_environment } from 'container-app/environment.bicep'
 
 @export()
-func container_app(context Context, containers Container[], options Options) object =>
+func container_app(context Context, containers Container[], options Options) ContainerApp =>
   create_resource(
     context,
     'containerApp',

@@ -1,5 +1,5 @@
-import { Context, Options } from '../types.bicep'
-import { create_resource } from '../internal/resource.bicep'
+import { Context, Options } from '../../types.bicep'
+import { create_resource } from '../../internal/resource.bicep'
 
 @export()
 func container_registry(context Context, sku Sku, options Options) object =>

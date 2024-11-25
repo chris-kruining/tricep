@@ -1,10 +1,10 @@
-import { Context, Options } from '../types.bicep'
-import { create_name, to_location_abbreviation, to_resource_abbreviation } from '../internal/name.bicep'
-import * as base from '../base/container-app.bicep'
-import { container_app_environment as base_container_app_environment } from '../base/container-app/environment.bicep'
+import * as base from '../../base/app/container-app.bicep'
+import { Context, Options } from '../../types.bicep'
+import { create_name, to_location_abbreviation, to_resource_abbreviation } from '../../internal/name.bicep'
+import { container_app_environment as base_container_app_environment } from '../../base/app/container-app/environment.bicep'
 
 @export()
-func container_app(context Context, containers base.Container[], options Options) object =>
+func container_app(context Context, containers base.Container[], options Options) base.ContainerApp =>
   base.container_app(context, containers, options)
 
 @export()

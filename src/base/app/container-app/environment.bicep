@@ -1,5 +1,5 @@
-import { create_resource } from '../../internal/resource.bicep'
-import { Context, Options, Tags } from '../../types.bicep'
+import { create_resource } from '../../../internal/resource.bicep'
+import { Context, Options, Tags } from '../../../types.bicep'
 
 @export()
 func container_app_environment(context Context, options Options) object =>

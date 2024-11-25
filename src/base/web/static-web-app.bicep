@@ -1,5 +1,5 @@
-import { create_resource } from '../internal/resource.bicep'
-import { Context, Options } from '../types.bicep'
+import { create_resource } from '../../internal/resource.bicep'
+import { Context, Options } from '../../types.bicep'
 
 @export()
 func static_web_app(context Context, options Options) object => create_resource(context, 'staticWebApp', options)

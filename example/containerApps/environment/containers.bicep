@@ -1,7 +1,7 @@
 import { Context } from '../../../src/types.bicep'
 import { with_name } from '../../../src/common/context.bicep'
 import { with_managed_identity } from '../../../src/common/identity.bicep'
-import { container_registry } from '../../../src/recommended/container-registry.bicep'
+import { container_registry } from '../../../src/recommended/container-registry/container-registry.bicep'
 import {
   container_app
   container
@@ -10,7 +10,7 @@ import {
   with_auto_scaling
   with_environment
   with_app_logs
-} from '../../../src/recommended/container-app.bicep'
+} from '../../../src/recommended/app/container-app.bicep'
 
 targetScope = 'resourceGroup'
 

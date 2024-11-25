@@ -1,5 +1,5 @@
 import { Context } from '../../../src/types.bicep'
-import { log_analytics } from '../../../src/recommended/log-analytics.bicep'
+import { log_analytics } from '../../../src/recommended/operational-insights/log-analytics.bicep'
 
 targetScope = 'resourceGroup'
 

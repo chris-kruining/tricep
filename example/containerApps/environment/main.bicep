@@ -1,6 +1,6 @@
 import { Context } from '../../../src/types.bicep'
 import { create_context } from '../../../src/common/context.bicep'
-import { resource_group } from '../../../src/recommended/resource-group.bicep'
+import { resource_group } from '../../../src/recommended/resources/resource-group.bicep'
 
 targetScope = 'subscription'
 
