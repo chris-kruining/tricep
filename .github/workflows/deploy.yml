@@ -8,7 +8,7 @@ on:
 permissions:
   id-token: write
   contents: read
-  
+
 jobs:
   prepare:
     name: Calculate next version
@@ -79,7 +79,7 @@ jobs:
         uses: azure/cli@v2
         with:
           inlineScript: |
-            for x in ls -al src; do
+            for x in $(ls -al src); do
               echo "$x"
             done
 
