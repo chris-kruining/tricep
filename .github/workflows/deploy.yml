@@ -9,9 +9,6 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  LABEL: ${{ fromJson('{"true": "latest","false":"next"}')[github.ref == 'refs/heads/main'] }}
-
 jobs:
   prepare:
     name: Calculate next version
@@ -89,12 +86,13 @@ jobs:
               name=${x#"./"}
               name=${name%".bicep"}
               name="br:${{ secrets.ACR_LOGIN_SERVER }}/$name"
+              label="${{ fromJson('{"true": "latest","false":"next"}')[github.ref == 'refs/heads/main'] }}"
 
               major="${{needs.prepare.outputs.major}}"
               minor="${{needs.prepare.outputs.minor}}"
               patch="${{needs.prepare.outputs.patch}}"
 
-              az bicep publish --file "$x" --target "$name:$LABEL" --with-source --force
+              az bicep publish --file "$x" --target "$name:$label" --with-source --force
 
               if ["${{github.ref}}" = "refs/heads/main"]; then
                 az bicep publish --file "$x" --target "$name:$major" --with-source --force
