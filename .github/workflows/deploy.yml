@@ -9,12 +9,14 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  LABEL: ${{ fromJson('{"true": "latest","false":"next"}')[github.ref == 'refs/heads/main'] }}
+
 jobs:
   prepare:
     name: Calculate next version
     runs-on: ubuntu-latest
     outputs:
-      semver: ${{ steps.gitversion.outputs.SemVer }}
       major: ${{ steps.gitversion.outputs.Major }}
       minor: ${{ steps.gitversion.outputs.Minor }}
       patch: ${{ steps.gitversion.outputs.Patch }}
@@ -92,9 +94,12 @@ jobs:
               minor="${{needs.prepare.outputs.minor}}"
               patch="${{needs.prepare.outputs.patch}}"
 
-              az bicep publish --file "$x" --target "$name:latest" --with-source --force
-              az bicep publish --file "$x" --target "$name:$major" --with-source --force
-              az bicep publish --file "$x" --target "$name:$major.$minor" --with-source --force
-              az bicep publish --file "$x" --target "$name:$major.$minor.$patch" --with-source
+              az bicep publish --file "$x" --target "$name:$LABEL" --with-source --force
+
+              if ["${{github.ref}}" = "refs/heads/main"]; then
+                az bicep publish --file "$x" --target "$name:$major" --with-source --force
+                az bicep publish --file "$x" --target "$name:$major.$minor" --with-source --force
+                az bicep publish --file "$x" --target "$name:$major.$minor.$patch" --with-source
+              fi
             done
 
