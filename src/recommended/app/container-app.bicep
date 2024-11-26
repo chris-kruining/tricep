@@ -4,7 +4,7 @@ import { create_name, to_location_abbreviation, to_resource_abbreviation } from 
 import { container_app_environment as base_container_app_environment } from '../../base/app/container-app/environment.bicep'
 
 @export()
-func container_app(context Context, containers base.Container[], options Options) base.ContainerApp =>
+func container_app(context Context, containers base.Container[], options Options) object =>
   base.container_app(
     context,
     containers,
@@ -24,11 +24,11 @@ func container_app(context Context, containers base.Container[], options Options
 
 @export()
 func container(config ContainerConfig) base.Container => {
-  name: config.name
+  name: replace(config.name, ' ', '-')
   image: config.image
-  resources: {
-    cpu: config.?resources.?cpu ?? '0.5'
-    memory: config.?resources.?memory ?? '0.5Gi'
+  resources: config.?resources ?? {
+    cpu: '0.25'
+    memory: '0.5Gi'
   }
 }
 
@@ -37,6 +37,23 @@ type ContainerConfig = {
   image: string
   resources: base.Container.resources?
 }
+
+@export()
+var resources_xxs = { cpu: '0.25', memory: '0.5Gi' }
+@export()
+var resources_xs = { cpu: '0.5', memory: '1.0Gi' }
+@export()
+var resources_s = { cpu: '0.75', memory: '1.5Gi' }
+@export()
+var resources_m = { cpu: '1.0', memory: '2.0Gi' }
+@export()
+var resources_l = { cpu: '1.25', memory: '2.5Gi' }
+@export()
+var resources_xl = { cpu: '1.5', memory: '3.0Gi' }
+@export()
+var resources_xxl = { cpu: '1.75', memory: '3.5Gi' }
+@export()
+var resources_xxxl = { cpu: '2.0', memory: '4.0Gi' }
 
 @export()
 func with_public_access(config PublicAccessConfig) object => {
@@ -108,7 +125,7 @@ func with_environment(id string) object => {
 }
 
 @export()
-func with_dapr(context Context, port int) object => {
+func with_dapr(context Context, port int) { properties: { configuration: { dapr: base.Dapr } } } => {
   properties: {
     configuration: {
       dapr: {
@@ -122,8 +139,10 @@ func with_dapr(context Context, port int) object => {
           context.nameConventionTemplate
         )
         appPort: port
+        appProtocol: 'http'
         enabled: true
-        enabledApiLogging: true
+        enableApiLogging: true
+        logLevel: 'info'
       }
     }
   }
@@ -137,7 +156,7 @@ func with_auto_scaling(min int, max int, rules { *: object }) object => {
         minReplicas: min
         maxReplicas: max
         rules: map(items(rules), (rule) => {
-          name: rule.key
+          name: toLower(rule.key)
           http: {
             metadata: rule.value
           }

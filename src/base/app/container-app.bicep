@@ -4,7 +4,7 @@ import { Context, Options, Tags } from '../../types.bicep'
 import { container_app_environment } from 'container-app/environment.bicep'
 
 @export()
-func container_app(context Context, containers Container[], options Options) ContainerApp =>
+func container_app(context Context, containers Container[], options Options) object =>
   create_resource(
     context,
     'containerApp',
@@ -13,7 +13,14 @@ func container_app(context Context, containers Container[], options Options) Con
         {
           properties: {
             template: {
-              containers: containers
+              containers: map(
+                containers,
+                c =>
+                  union(
+                    c,
+                    { resources: { cpu: json(c.resources.?cpu ?? '0.25'), memory: c.resources.?memory ?? '0.5Gi' } }
+                  )
+              )
             }
           }
         }
@@ -427,13 +434,15 @@ type ContainerAppProbeTcpSocket = {
 }
 
 @export()
-type ContainerResources = {
-  @description('Required CPU in cores, e.g. 0.5 To specify a decimal value, use the json() function.')
-  cpu: string?
-
-  @description('Required memory, e.g. "250Mb".')
-  memory: string?
-}
+type ContainerResources =
+  | { cpu: '0.25', memory: '0.5Gi' }
+  | { cpu: '0.5', memory: '1.0Gi' }
+  | { cpu: '0.75', memory: '1.5Gi' }
+  | { cpu: '1.0', memory: '2.0Gi' }
+  | { cpu: '1.25', memory: '2.5Gi' }
+  | { cpu: '1.5', memory: '3.0Gi' }
+  | { cpu: '1.75', memory: '3.5Gi' }
+  | { cpu: '2.0', memory: '4.0Gi' }
 
 @export()
 type VolumeMount = {

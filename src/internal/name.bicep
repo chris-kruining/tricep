@@ -24,6 +24,8 @@ func to_resource_abbreviation(resourceType ResourceType) Abbreviation =>
     applicationInsights: 'appi'
     storageAccount: 'st'
     logAnalytics: 'la'
+    actionGroup: 'ag'
+    sheduledQueryRules: 'insqr'
   }[resourceType]
 
 @export()

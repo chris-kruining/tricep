@@ -11,20 +11,28 @@ import {
   with_environment
   with_app_logs
   with_traffic_splitting
+  resources_l
 } from '../../../src/recommended/app/container-app.bicep'
 
 targetScope = 'resourceGroup'
 
 param context Context
-param logAnalytics resource'Microsoft.OperationalInsights/workspaces@2023-09-01'
+param logAnalyticsId string
+// param logAnalyticsName string
+
+// resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+//   name: logAnalyticsName
+// }
 
 var containerRegistryConfig = container_registry(with_name(context, context.project), [])
-var containerAppEnvironmentConfig = container_app_environment(with_name(context, context.project), [])
+var containerAppEnvironmentConfig = container_app_environment(with_name(context, context.project), [
+  // with_app_logs(logAnalytics.properties.customerId, logAnalytics.listKeys().primarySharedKey)
+])
 var containerApp1Config = container_app(
-  with_name(context, 'app_1'),
+  with_name(context, 'app-1'),
   [
     container({ name: 'container 1', image: 'some-container-image' })
-    container({ name: 'container 2', image: 'some-other-container-image' })
+    container({ name: 'container 2', image: 'some-other-container-image', resources: resources_l })
   ],
   [
     with_managed_identity()
@@ -38,13 +46,14 @@ var containerApp1Config = container_app(
   ]
 )
 var containerApp2Config = container_app(
-  with_name(context, 'app_2'),
+  with_name(context, 'app-2'),
   [
-    container({ name: 'container 1', image: 'some-third-container-image' })
+    container({ name: 'container-1', image: 'some-third-container-image' })
   ],
   [
     with_managed_identity()
     with_environment(environment.id)
+    with_dapr(context, 3000)
     with_traffic_splitting({
       by: 'name'
       weights: {
@@ -52,7 +61,6 @@ var containerApp2Config = container_app(
         rev2: 20
       }
     })
-    with_dapr(context, 3001)
     with_auto_scaling(1, 1, {
       ruleName: {
         concurrentRequests: '10'
@@ -73,7 +81,25 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: containerAppEnvironmentConfig.name
   location: containerAppEnvironmentConfig.location
   tags: containerAppEnvironmentConfig.tags
-  properties: with_app_logs(logAnalytics.properties.customerId, logAnalytics.listKeys().primarySharedKey)
+  properties: {
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: reference(logAnalyticsId, '2023-09-01').customerId
+        sharedKey: listKeys(logAnalyticsId, '2023-09-01').primarySharedKey
+      }
+    }
+    peerAuthentication: {
+      mtls: {
+        enabled: false
+      }
+    }
+    peerTrafficConfiguration: {
+      encryption: {
+        enabled: false
+      }
+    }
+  }
 }
 
 resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
@@ -81,16 +107,6 @@ resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
   location: containerApp1Config.location
   identity: containerApp1Config.identity
   properties: containerApp1Config.properties
-
-  // properties: {
-  //     registries: [
-  //       {
-  //         identity: uai.id
-  //         server: acr.outputs.loginServer
-  //       }
-  //     ]
-  //   }
-  // }
 }
 
 resource app_2 'Microsoft.App/containerApps@2024-03-01' = {
@@ -100,5 +116,5 @@ resource app_2 'Microsoft.App/containerApps@2024-03-01' = {
   properties: containerApp2Config.properties
 }
 
-output app_1 resource'Microsoft.App/containerApps@2022-06-01-preview' = app_1
-output app_2 resource'Microsoft.App/containerApps@2022-06-01-preview' = app_2
+// output app_1 resource'Microsoft.App/containerApps@2022-06-01-preview' = app_1
+// output app_2 resource'Microsoft.App/containerApps@2022-06-01-preview' = app_2
