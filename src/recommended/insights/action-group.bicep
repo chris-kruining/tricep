@@ -6,7 +6,9 @@ func action_group(context Context, name string, options Options) object => base.
 
 @export()
 func with_receiver(type ReceiverType, receiver object) object => {
-  '${type}Receivers': [receiver]
+  properties: {
+    '${type}Receivers': [receiver]
+  }
 }
 
 type ReceiverType =

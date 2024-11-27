@@ -171,6 +171,11 @@ func container_app_environment(context Context, options Options) object =>
   base_container_app_environment(context, options)
 
 @export()
+@description('''
+Currently this is unusable due to a bug in ARM
+
+https://github.com/Azure/bicep-types-az/issues/1407
+''')
 func with_app_logs(customerId string, sharedKey string) object => {
   properties: {
     appLogsConfiguration: {

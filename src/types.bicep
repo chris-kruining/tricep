@@ -29,14 +29,6 @@ type uint8 = int
 type int8 = int
 
 @export()
-type Resource = {
-  name: string
-  location: string
-  properties: object
-  *: object
-}
-
-@export()
 type Context = {
   project: string
   nameConventionTemplate: string
@@ -142,6 +134,7 @@ type ResourceType =
   | 'logAnalytics'
   | 'actionGroup'
   | 'sheduledQueryRules'
+  | 'workflow'
 
 @export()
 type Abbreviation =
@@ -164,3 +157,4 @@ type Abbreviation =
   | 'la'
   | 'ag'
   | 'insqr'
+  | 'logic'

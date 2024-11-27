@@ -1,0 +1,201 @@
+{
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {
+        "Initialize_variable": {
+            "type": "InitializeVariable",
+            "inputs": {
+                "variables": [
+                    {
+                        "name": "AffectedResource",
+                        "type": "array",
+                        "value": "@split(triggerBody()?['data']?['essentials']?['alertTargetIDs'][0], '/')"
+                    }
+                ]
+            },
+            "runAfter": {}
+        },
+        "Read_a_resource": {
+            "type": "ApiConnection",
+            "inputs": {
+                "host": {
+                    "connection": {
+                        "referenceName": "arm"
+                    }
+                },
+                "method": "get",
+                "path": "/subscriptions/@{encodeURIComponent(variables('AffectedResource')[2])}/resourcegroups/@{encodeURIComponent(variables('AffectedResource')[4])}/providers/@{encodeURIComponent(variables('AffectedResource')[6])}/@{encodeURIComponent(concat(variables('AffectedResource')[7], '/', variables('AffectedResource')[8]))}",
+                "queries": {
+                    "x-ms-api-version": "@outputs('Api_version')"
+                }
+            },
+            "runAfter": {
+                "Api_version": [
+                    "SUCCEEDED"
+                ]
+            },
+            "runtimeConfiguration": {
+                "staticResult": {
+                    "name": "Read_a_resource0",
+                    "staticResultOptions": "Disabled"
+                }
+            }
+        },
+        "Post_message_in_a_chat_or_channel": {
+            "type": "ApiConnection",
+            "inputs": {
+                "host": {
+                    "connection": {
+                        "referenceName": "teams"
+                    }
+                },
+                "method": "post",
+                "body": {
+                    "recipient": "19:25911fc0109a40a99a7a481bf47e0b3f@thread.v2",
+                    "messageBody": "<p class=\"editor-paragraph\">Alert: @{triggerBody()?['data']?['essentials']?['alertRule']}, with severity: @{triggerBody()?['data']?['essentials']?['severity']}, was fired at @{triggerBody()?['data']?['essentials']?['firedDateTime']}</p><br><p class=\"editor-paragraph\">Monitoring service: @{triggerBody()?['data']?['essentials']?['monitoringService']}</p><p class=\"editor-paragraph\">Condition: @{triggerBody()?['data']?['essentials']?['monitorCondition']}</p><p class=\"editor-paragraph\">Type: @{triggerBody()?['data']?['essentials']?['signalType']}</p><p class=\"editor-paragraph\">Alert ID: @{triggerBody()?['data']?['essentials']?['alertId']}</p>"
+                },
+                "path": "/beta/teams/conversation/message/poster/Flow bot/location/@{encodeURIComponent('Group chat')}"
+            },
+            "runAfter": {
+                "Read_a_resource": [
+                    "SUCCEEDED"
+                ]
+            }
+        },
+        "Post_message_(V2)": {
+            "type": "ApiConnection",
+            "inputs": {
+                "host": {
+                    "connection": {
+                        "referenceName": "slack-1"
+                    }
+                },
+                "method": "post",
+                "body": {
+                    "channel": "C07VDDCU2FJ",
+                    "text": "Alert: @{triggerBody()?['data']?['essentials']?['alertRule']}, with severity: @{triggerBody()?['data']?['essentials']?['severity']}, was fired at @{triggerBody()?['data']?['essentials']?['firedDateTime']}\n\nMonitoring service: @{triggerBody()?['data']?['essentials']?['monitoringService']}\nCondition: @{triggerBody()?['data']?['essentials']?['monitorCondition']}\nType: @{triggerBody()?['data']?['essentials']?['signalType']}\nAlert ID: @{triggerBody()?['data']?['essentials']?['alertId']}",
+                    "username": "Azure alerts"
+                },
+                "path": "/v2/chat.postMessage"
+            },
+            "runAfter": {
+                "Read_a_resource": [
+                    "SUCCEEDED"
+                ]
+            }
+        },
+        "Read_resource_provider": {
+            "type": "ApiConnection",
+            "inputs": {
+                "host": {
+                    "connection": {
+                        "referenceName": "arm"
+                    }
+                },
+                "method": "get",
+                "path": "/subscriptions/@{encodeURIComponent(variables('AffectedResource')[2])}/providers/@{encodeURIComponent(variables('AffectedResource')[6])}",
+                "queries": {
+                    "x-ms-api-version": "2016-06-01"
+                }
+            },
+            "runAfter": {
+                "Initialize_variable": [
+                    "SUCCEEDED"
+                ]
+            }
+        },
+        "Api_version": {
+            "type": "JavaScriptCode",
+            "inputs": {
+                "code": "try {\r\n    const providers = workflowContext.actions.Read_resource_provider.outputs.body.resourceTypes;\r\n    const affectedResource = workflowContext.actions.Initialize_variable.inputs.variables[0].value;\r\n    const givenResourceType = affectedResource[7];\r\n    // const givenResourceType = `${affectedResource[7]}/${affectedResource[8]}`;\r\n\r\n    const provider = providers.find(\r\n        ({ resourceType }) => resourceType === givenResourceType\r\n    );\r\n\r\n    return provider\r\n        ? provider.apiVersions.at(0)\r\n        : JSON.stringify(providers);\r\n}\r\ncatch(e) {\r\n    return `an error occurred: ${e.message}`;\r\n}"
+            },
+            "runAfter": {
+                "Read_resource_provider": [
+                    "SUCCEEDED"
+                ]
+            }
+        }
+    },
+    "contentVersion": "1.0.0.0",
+    "outputs": {},
+    "triggers": {
+        "When_a_HTTP_request_is_received": {
+            "type": "Request",
+            "kind": "Http",
+            "inputs": {
+                "method": "POST",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "schemaId": {
+                            "type": "string"
+                        },
+                        "data": {
+                            "type": "object",
+                            "properties": {
+                                "essentials": {
+                                    "type": "object",
+                                    "properties": {
+                                        "alertId": {
+                                            "type": "string"
+                                        },
+                                        "alertRule": {
+                                            "type": "string"
+                                        },
+                                        "severity": {
+                                            "type": "string"
+                                        },
+                                        "signalType": {
+                                            "type": "string"
+                                        },
+                                        "monitorCondition": {
+                                            "type": "string"
+                                        },
+                                        "monitoringService": {
+                                            "type": "string"
+                                        },
+                                        "alertTargetIDs": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "originAlertId": {
+                                            "type": "string"
+                                        },
+                                        "firedDateTime": {
+                                            "type": "string"
+                                        },
+                                        "resolvedDateTime": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "essentialsVersion": {
+                                            "type": "string"
+                                        },
+                                        "alertContextVersion": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "alertContext": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "staticResults": {
+        "Read_a_resource0": {
+            "status": "Succeeded",
+            "outputs": {
+                "statusCode": "OK"
+            }
+        }
+    }
+}

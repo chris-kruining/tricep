@@ -26,6 +26,7 @@ func to_resource_abbreviation(resourceType ResourceType) Abbreviation =>
     logAnalytics: 'la'
     actionGroup: 'ag'
     sheduledQueryRules: 'insqr'
+    workflow: 'logic'
   }[resourceType]
 
 @export()

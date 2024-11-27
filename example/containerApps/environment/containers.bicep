@@ -1,4 +1,5 @@
 import { Context } from '../../../src/types.bicep'
+import { __dynamic } from '../../../src/utilities.bicep'
 import { with_name } from '../../../src/common/context.bicep'
 import { with_managed_identity } from '../../../src/common/identity.bicep'
 import { container_registry } from '../../../src/recommended/container-registry/container-registry.bicep'
@@ -18,16 +19,9 @@ targetScope = 'resourceGroup'
 
 param context Context
 param logAnalyticsId string
-// param logAnalyticsName string
 
-// resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
-//   name: logAnalyticsName
-// }
-
-var containerRegistryConfig = container_registry(with_name(context, context.project), [])
-var containerAppEnvironmentConfig = container_app_environment(with_name(context, context.project), [
-  // with_app_logs(logAnalytics.properties.customerId, logAnalytics.listKeys().primarySharedKey)
-])
+var containerRegistryConfig = container_registry(context, [])
+var containerAppEnvironmentConfig = container_app_environment(context, [])
 var containerApp1Config = container_app(
   with_name(context, 'app-1'),
   [
@@ -81,30 +75,15 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: containerAppEnvironmentConfig.name
   location: containerAppEnvironmentConfig.location
   tags: containerAppEnvironmentConfig.tags
-  properties: {
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: reference(logAnalyticsId, '2023-09-01').customerId
-        sharedKey: listKeys(logAnalyticsId, '2023-09-01').primarySharedKey
-      }
-    }
-    peerAuthentication: {
-      mtls: {
-        enabled: false
-      }
-    }
-    peerTrafficConfiguration: {
-      encryption: {
-        enabled: false
-      }
-    }
-  }
+  properties: __dynamic(containerAppEnvironmentConfig, [
+    // with_app_logs(reference(logAnalyticsId, '2023-09-01').customerId, 'logAnalytics.listKeys().primarySharedKey')
+  ])
 }
 
 resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerApp1Config.name
   location: containerApp1Config.location
+  tags: containerApp1Config.tags
   identity: containerApp1Config.identity
   properties: containerApp1Config.properties
 }
@@ -112,9 +91,7 @@ resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
 resource app_2 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerApp2Config.name
   location: containerApp2Config.location
+  tags: containerApp2Config.tags
   identity: containerApp2Config.identity
   properties: containerApp2Config.properties
 }
-
-// output app_1 resource'Microsoft.App/containerApps@2022-06-01-preview' = app_1
-// output app_2 resource'Microsoft.App/containerApps@2022-06-01-preview' = app_2
