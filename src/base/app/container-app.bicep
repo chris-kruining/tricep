@@ -4,7 +4,7 @@ import { Context, Options, Tags } from '../../types.bicep'
 import { container_app_environment } from 'container-app/environment.bicep'
 
 @export()
-func container_app(context Context, containers Container[], options Options) ContainerApp =>
+func container_app(context Context, containers Container[], options Options) object =>
   create_resource(
     context,
     'containerApp',
@@ -13,7 +13,14 @@ func container_app(context Context, containers Container[], options Options) Con
         {
           properties: {
             template: {
-              containers: containers
+              containers: map(
+                containers,
+                c =>
+                  union(
+                    c,
+                    { resources: { cpu: json(c.resources.?cpu ?? '0.25'), memory: c.resources.?memory ?? '0.5Gi' } }
+                  )
+              )
             }
           }
         }
@@ -48,6 +55,7 @@ type ContainerApp = {
   properties: ContainerAppProperties?
 }
 
+@export()
 type ExtendedLocation = {
   @description('The name of the extended location.')
   name: string?
@@ -56,6 +64,7 @@ type ExtendedLocation = {
   type: 'CustomLocation'?
 }
 
+@export()
 type ManagedServiceIdentity = {
   @description('Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).')
   type: 'None' | 'SystemAssigned' | 'SystemAssigned,UserAssigned' | 'UserAssigned'
@@ -64,12 +73,15 @@ type ManagedServiceIdentity = {
   userAssignedIdentities: UserAssignedIdentities?
 }
 
+@export()
 type UserAssignedIdentities = {
   *: UserAssignedIdentity
 }
 
+@export()
 type UserAssignedIdentity = {}
 
+@export()
 type ContainerAppProperties = {
   @description('Non versioned Container App configuration properties.')
   configuration: Configuration?
@@ -84,6 +96,7 @@ type ContainerAppProperties = {
   workloadProfileName: string?
 }
 
+@export()
 type Configuration = {
   @description('ActiveRevisionsMode controls how active revisions are handled for the Container app: {list}{item}Multiple: multiple revisions can be active.{/item}{item}Single: Only one revision can be active at a time. Revision weights can not be used in this mode. If no value if provided, this is the default.{/item}{/list}')
   activeRevisionsMode: 'Multiple' | 'Single'?
@@ -107,6 +120,7 @@ type Configuration = {
   service: Service?
 }
 
+@export()
 type Dapr = {
   @description('Dapr application identifier.')
   appId: string?
@@ -133,6 +147,7 @@ type Dapr = {
   logLevel: 'debug' | 'error' | 'info' | 'warn'?
 }
 
+@export()
 type Ingress = {
   @description('.')
   additionalPortMappings: IngressPortMapping[]?
@@ -171,6 +186,7 @@ type Ingress = {
   transport: 'auto' | 'http' | 'http2' | 'tcp'?
 }
 
+@export()
 type IngressPortMapping = {
   @description('Specifies the exposed port for the target port. If not specified, it defaults to target port.')
   exposedPort: int?
@@ -182,6 +198,7 @@ type IngressPortMapping = {
   targetPort: int
 }
 
+@export()
 type CorsPolicy = {
   @description('Specifies whether the resource allows credentials.')
   allowCredentials: bool?
@@ -202,6 +219,7 @@ type CorsPolicy = {
   maxAge: int?
 }
 
+@export()
 type CustomDomain = {
   @description('Custom Domain binding type.')
   bindingType: 'Disabled' | 'SniEnabled'?
@@ -213,6 +231,7 @@ type CustomDomain = {
   name: string
 }
 
+@export()
 type IpSecurityRestrictionRule = {
   @description('Allow or Deny rules to determine for incoming IP. Note: Rules can only consist of ALL Allow or ALL Deny.')
   action: 'Allow' | 'Deny'
@@ -227,11 +246,13 @@ type IpSecurityRestrictionRule = {
   name: string
 }
 
+@export()
 type IngressStickySessions = {
   @description('Sticky Session Affinity.')
   affinity: 'none' | 'sticky'?
 }
 
+@export()
 type TrafficWeight = {
   @description('Associates a traffic label with a revision.')
   label: string?
@@ -246,6 +267,7 @@ type TrafficWeight = {
   weight: int?
 }
 
+@export()
 type RegistryCredentials = {
   @description('A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use \'system\'.')
   identity: string?
@@ -260,6 +282,7 @@ type RegistryCredentials = {
   username: string?
 }
 
+@export()
 type Secret = {
   @description('Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
@@ -275,11 +298,13 @@ type Secret = {
   value: string?
 }
 
+@export()
 type Service = {
   @description('Dev ContainerApp service type.')
   type: string
 }
 
+@export()
 type Template = {
   @description('List of container definitions for the Container App.')
   containers: Container[]?
@@ -330,6 +355,7 @@ type Container = {
   volumeMounts: VolumeMount[]?
 }
 
+@export()
 type EnvironmentVar = {
   @description('Environment variable name.')
   name: string?
@@ -341,6 +367,7 @@ type EnvironmentVar = {
   value: string?
 }
 
+@export()
 type ContainerAppProbe = {
   @description('Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1. Maximum value is 10.')
   failureThreshold: int?
@@ -370,6 +397,7 @@ type ContainerAppProbe = {
   type: 'Liveness' | 'Readiness' | 'Startup'?
 }
 
+@export()
 type ContainerAppProbeHttpGet = {
   @description('Host name to connect to, defaults to the pod IP. You probably want to set "Host" in httpHeaders instead.')
   host: string?
@@ -387,6 +415,7 @@ type ContainerAppProbeHttpGet = {
   scheme: 'HTTP' | 'HTTPS'?
 }
 
+@export()
 type ContainerAppProbeHttpGetHttpHeadersItem = {
   @description('The header field name.')
   name: string
@@ -395,6 +424,7 @@ type ContainerAppProbeHttpGetHttpHeadersItem = {
   value: string
 }
 
+@export()
 type ContainerAppProbeTcpSocket = {
   @description('Optional: Host name to connect to, defaults to the pod IP.')
   host: string?
@@ -403,14 +433,18 @@ type ContainerAppProbeTcpSocket = {
   port: int
 }
 
-type ContainerResources = {
-  @description('Required CPU in cores, e.g. 0.5 To specify a decimal value, use the json() function.')
-  cpu: string?
+@export()
+type ContainerResources =
+  | { cpu: '0.25', memory: '0.5Gi' }
+  | { cpu: '0.5', memory: '1.0Gi' }
+  | { cpu: '0.75', memory: '1.5Gi' }
+  | { cpu: '1.0', memory: '2.0Gi' }
+  | { cpu: '1.25', memory: '2.5Gi' }
+  | { cpu: '1.5', memory: '3.0Gi' }
+  | { cpu: '1.75', memory: '3.5Gi' }
+  | { cpu: '2.0', memory: '4.0Gi' }
 
-  @description('Required memory, e.g. "250Mb".')
-  memory: string?
-}
-
+@export()
 type VolumeMount = {
   @description('Path within the container at which the volume should be mounted.Must not contain \':\'.')
   mountPath: string?
@@ -422,6 +456,7 @@ type VolumeMount = {
   volumeName: string?
 }
 
+@export()
 type InitContainer = {
   @description('Container start command arguments.')
   args: string[]?
@@ -445,6 +480,7 @@ type InitContainer = {
   volumeMounts: VolumeMount[]?
 }
 
+@export()
 type Scale = {
   @description('Optional. Maximum number of container replicas. Defaults to 10 if not set.')
   maxReplicas: int?
@@ -456,6 +492,7 @@ type Scale = {
   rules: ScaleRule[]?
 }
 
+@export()
 type ScaleRule = {
   @description('Azure Queue based scaling.')
   azureQueue: QueueScaleRule?
@@ -473,6 +510,7 @@ type ScaleRule = {
   tcp: TcpScaleRule?
 }
 
+@export()
 type QueueScaleRule = {
   @description('Authentication secrets for the queue scale rule.')
   auth: ScaleRuleAuth[]?
@@ -484,6 +522,7 @@ type QueueScaleRule = {
   queueName: string?
 }
 
+@export()
 type ScaleRuleAuth = {
   @description('Name of the secret from which to pull the auth params.')
   secretRef: string?
@@ -492,6 +531,7 @@ type ScaleRuleAuth = {
   triggerParameter: string?
 }
 
+@export()
 type CustomScaleRule = {
   @description('Authentication secrets for the custom scale rule.')
   auth: ScaleRuleAuth[]?
@@ -503,6 +543,7 @@ type CustomScaleRule = {
   type: string?
 }
 
+@export()
 type HttpScaleRule = {
   @description('Authentication secrets for the http scale rule.')
   auth: ScaleRuleAuth[]?
@@ -511,6 +552,7 @@ type HttpScaleRule = {
   metadata: { *: string }?
 }
 
+@export()
 type TcpScaleRule = {
   @description('Authentication secrets for the tcp scale rule.')
   auth: ScaleRuleAuth[]?
@@ -519,6 +561,7 @@ type TcpScaleRule = {
   metadata: { *: string }?
 }
 
+@export()
 type ServiceBind = {
   @description('serviceId.')
   name: string?
@@ -527,6 +570,7 @@ type ServiceBind = {
   serviceId: string?
 }
 
+@export()
 type Volume = {
   @description('Mount options used while mounting the AzureFile. Must be a comma-separated string.')
   mountOptions: string?
@@ -544,6 +588,7 @@ type Volume = {
   storageType: 'AzureFile' | 'EmptyDir' | 'Secret'?
 }
 
+@export()
 type SecretVolumeItem = {
   @description('Path to project secret to. If no path is provided, path defaults to name of secret listed in secretRef.')
   path: string?

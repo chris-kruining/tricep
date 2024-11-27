@@ -1,31 +1,21 @@
-# tricep
-A library of compositional functions to aid in the creation of config for resources.
+import { Options } from './types.bicep'
 
-This library, by design, does not create any resouces for you.
+@export()
+@description('''
+Compose resouce properties when using dynamic functions
+---
 
-## Examples
-See the `example` directory for some use cases on how to utilize Tricep
+`__dynamic` aids in resource property composition.
+Right now bicep/ARM has a limitation where the whole expression  
+is made dynamic once a dynamic function is used somewhere in the tree.
 
-## Design
-*TODO*
+since the name, location, and tags of a resouce may not be dynamic you will get [error BCP120](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-core-diagnostics#BCP120) when you  
+apply the config to the resource.
 
-## Limitations / Known errors / Gotcha's
+`__dynamic` has the same composition logic as the internal `create_resource` function does.  
 
-### composition with dynamic bicep functions
-Bicep has a bunch of functions that need to run during "runtime".  
-For example `reference`, `listKeys`, or `listCallbackUrl`.
-
-The use of such a function causes the whole expression tree to be hoisted to the generated ARM template.  
-For a resources `properties` this is a-ok. The `name`, `locaton`, and `tags` however 
-need to be resolved when generating the ARM template.
-
-This means that we need to split the code that created the `name`, `locaton`, and `tags` properties from the code that creates the `properties` property.
-
-This is where the `__dynamic` function from the utilities comes in. This function replicates the composition normally done in an internal function in Tricep, but just retruns the `properties`'s value.
-
-An example to illustrate what I mean:
-
-**Don't do this**
+### Example
+#### Don't do this
 ```bicep
 import { Context } from '../../../src/types.bicep'
 import { action_group, with_receiver } from '../../../src/recommended/insights/action-group.bicep'
@@ -52,7 +42,7 @@ resource actionGroup 'microsoft.insights/actionGroups@2023-09-01-preview' = {
 }
 ```
 
-**Instead do this**
+#### Instead do this
 ```bicep
 import { Context } from '../../../src/types.bicep'
 import { __dynamic } from '../../../src/utilities.bicep'
@@ -79,3 +69,14 @@ resource actionGroup 'microsoft.insights/actionGroups@2023-09-01-preview' = {
   ])
 }
 ```
+
+### Dev note
+I hate `__dynamic`. i kind of ruined my -imo- elegant API design.  
+but a limitation is a limitation, and therefor requires a workaround
+
+If it turns out that `__dynamic` will show up everywhere in my code where I use Tricep,  
+then I'll re-design the API to not need `__dynamic` anymore.
+Until then this will have to suffice.
+''')
+func __dynamic(resource object, options Options) object =>
+  reduce(options, resource, (obj, next) => union(obj, next)).properties

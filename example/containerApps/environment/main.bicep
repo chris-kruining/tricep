@@ -8,9 +8,8 @@ param deployedAt string
 param environment string
 
 var context = create_context({
-  name: 'appName'
-  project: 'project'
-  nameConventionTemplate: '$type-$environment-$location-$name'
+  project: 'projectName'
+  nameConventionTemplate: '$type-$environment-$location-$project'
   environment: environment
   location: 'westeurope'
   deployedAt: deployedAt
@@ -27,11 +26,20 @@ resource group 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   properties: resourceGroupConfig.properties
 }
 
+module alertLogicApp 'alert-logic-app.bicep' = {
+  name: 'alertLogicApp'
+  scope: group
+  params: {
+    context: context
+  }
+}
+
 module monitoring 'monitoring.bicep' = {
   name: 'monitoring'
   scope: group
   params: {
     context: context
+    alertLogicApp: alertLogicApp.outputs.logicApp
   }
 }
 
@@ -40,7 +48,6 @@ module containers 'containers.bicep' = {
   scope: group
   params: {
     context: context
-    customerId: 'monitoring.outputs.la_customerId'
-    sharedKey: 'monitoring.outputs.la_sharedKey'
+    logAnalyticsId: monitoring.outputs.logAnalyticsId
   }
 }

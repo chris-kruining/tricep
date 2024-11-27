@@ -12,7 +12,6 @@ func create_resource(context Context, resourceType ResourceType, options object[
           location: to_location_abbreviation(context.location)
           type: to_resource_abbreviation(resourceType)
           project: context.project
-          name: context.name
         },
         context.nameConventionTemplate
       )

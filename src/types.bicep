@@ -1,6 +1,35 @@
 @export()
+@minValue(0)
+@maxValue(4294967295)
+type uint32 = int
+
+@export()
+@minValue(-2147483648)
+@maxValue(2147483647)
+type int32 = int
+
+@export()
+@minValue(0)
+@maxValue(65535)
+type uint16 = int
+
+@export()
+@minValue(-32768)
+@maxValue(32767)
+type int16 = int
+
+@export()
+@minValue(0)
+@maxValue(255)
+type uint8 = int
+
+@export()
+@minValue(-128)
+@maxValue(127)
+type int8 = int
+
+@export()
 type Context = {
-  name: string
   project: string
   nameConventionTemplate: string
   environment: string
@@ -103,6 +132,9 @@ type ResourceType =
   | 'applicationInsights'
   | 'storageAccount'
   | 'logAnalytics'
+  | 'actionGroup'
+  | 'sheduledQueryRules'
+  | 'workflow'
 
 @export()
 type Abbreviation =
@@ -123,3 +155,6 @@ type Abbreviation =
   | 'appi'
   | 'st'
   | 'la'
+  | 'ag'
+  | 'insqr'
+  | 'logic'
