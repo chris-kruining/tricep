@@ -15,9 +15,11 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   }
   properties: {
     adminUserEnabled: true
+    anonymousPullEnabled: true
     dataEndpointEnabled: false
     encryption: {
       status: 'disabled'
     }
+    publicNetworkAccess: 'Enabled'
   }
 }
