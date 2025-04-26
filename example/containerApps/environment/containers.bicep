@@ -80,7 +80,7 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
   ])
 }
 
-resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
+resource app_1 'Microsoft.App/containerApps@2025-01-01' = {
   name: containerApp1Config.name
   location: containerApp1Config.location
   tags: containerApp1Config.tags
@@ -88,7 +88,7 @@ resource app_1 'Microsoft.App/containerApps@2024-03-01' = {
   properties: containerApp1Config.properties
 }
 
-resource app_2 'Microsoft.App/containerApps@2024-03-01' = {
+resource app_2 'Microsoft.App/containerApps@2025-01-01' = {
   name: containerApp2Config.name
   location: containerApp2Config.location
   tags: containerApp2Config.tags
