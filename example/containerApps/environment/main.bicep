@@ -19,7 +19,7 @@ var context = create_context({
 
 var resourceGroupConfig = resource_group(context, [])
 
-resource group 'Microsoft.Resources/resourceGroups@2024-07-01' = {
+resource group 'Microsoft.Resources/resourceGroups@2025-03-01' = {
   name: resourceGroupConfig.name
   location: resourceGroupConfig.location
   tags: resourceGroupConfig.tags
