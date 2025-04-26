@@ -71,7 +71,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   properties: containerRegistryConfig.properties
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
+resource environment 'Microsoft.App/managedEnvironments@2025-01-01' = {
   name: containerAppEnvironmentConfig.name
   location: containerAppEnvironmentConfig.location
   tags: containerAppEnvironmentConfig.tags
