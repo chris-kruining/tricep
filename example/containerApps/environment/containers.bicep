@@ -63,7 +63,7 @@ var containerApp2Config = container_app(
   ]
 )
 
-resource registry 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
+resource registry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
   name: containerRegistryConfig.name
   location: containerRegistryConfig.location
   tags: containerRegistryConfig.tags
