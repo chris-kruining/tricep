@@ -46,7 +46,7 @@ var sheduledQueryRulesConfig = sheduled_query_rules(
   ]
 )
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: logAnalyticsConfig.name
   location: logAnalyticsConfig.location
   tags: logAnalyticsConfig.tags
