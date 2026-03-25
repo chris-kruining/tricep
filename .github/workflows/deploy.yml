@@ -52,7 +52,7 @@ jobs:
           subscription-id: ${{ secrets.TRICEP_SUBSCRIPTION_ID }}
 
       - name: Deploy bicep
-        uses: Azure/cli@v2
+        uses: Azure/cli@v3
         with:
           inlineScript: |
             az deployment sub create \
@@ -78,7 +78,7 @@ jobs:
           subscription-id: ${{ secrets.TRICEP_SUBSCRIPTION_ID }}
 
       - name: Publish Bicep module
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           inlineScript: |
             cd src
