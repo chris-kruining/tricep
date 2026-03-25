@@ -45,7 +45,7 @@ jobs:
             infrastructure
 
       - name: Az CLI login
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.TRICEP_CLIENT_ID }}
           tenant-id: ${{ secrets.TRICEP_TENANT_ID }}
@@ -71,7 +71,7 @@ jobs:
             src
       
       - name: Az CLI login
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.TRICEP_CLIENT_ID }}
           tenant-id: ${{ secrets.TRICEP_TENANT_ID }}
